@@ -1,26 +1,32 @@
 //포트설정
 const p2p_port = process.env.P2P_PORT || 6001
-const { response } = require("express")
+// const { response } = require("express")
 const WebSocket = require("ws")
-const { getLastBlock } = require("./chinedBlock")
+// const { getLastBlock } = require("./chainedBlock")
 
 
 
 //p2p서버 초기화한는 하뭇
-function initP2PServer(){
-	const server = new WebSocket.Server({port:p2p_port})
+function initP2PServer(test_port){
+	const server = new WebSocket.Server({port:test_port})
 	server.on("connection",(ws)=>{initConnection(ws);})
-	console.log("Listening webSocket port : " + p2p_port)
+	console.log("Listening webSocket port : " + test_port)
 }
 
+initP2PServer(6001)
+initP2PServer(6002)
+initP2PServer(6003)
+
 let sockets = []
+
 function initConnection(ws){
 	sockets.push(ws)
+	initMessageHandler(ws)
 }
 function getSockets() {
 	return sockets;
   }
-  console.log("sockets 확인: ", sockets);
+
   
   //메세지를 제이슨 형태로 전달 : 내가 가지고 있는 블록체인이 올바르지 않다, 너꺼 줘봐 해서 비교하고 내꺼가 틀리면 교체 등.
   function write(ws, message) {
@@ -48,8 +54,8 @@ function getSockets() {
 	newPeers.forEach(
 	  (peer) => {
 		const ws = new WebSocket(peer)
-		ws.on("open", () => { initConnection(ws) })
-		ws.on("error", () => { console.log("connection Failed!"); })
+		ws.on("open", () => { console.log("open"); initConnection(ws); })
+		ws.on("error", (errorType) => { console.log("connection Failed!" ) + errorType })
 	  }
 	)
   }
@@ -115,4 +121,4 @@ function queryLatestMsg(){
 //테스트하려면 서버 2개 열어서 요청하고 받은걸 타입들이 오는지 확인..
 
   
-  module.exports = { connectToPeers }
+  module.exports = { connectToPeers, getSockets }

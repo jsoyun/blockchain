@@ -43,7 +43,9 @@ function createGenesisBlock(){
 
 	console.log("version : %s, timestamp: %d, body : %s",version,timestamp,body)
 	console.log("previousHash : %d", previousHash);
-	console.log("merkleRoot : %d", merkleRoot);
+	console.log("tree :")
+	console.log(tree)
+	console.log("merkleRoot : %d", merkleRoot.toString('hex'));
 
 	const header = new BlockHeader(version, previousHash, timestamp, merkleRoot, bit,nonce)
 	return new Block(header, body)

@@ -24,7 +24,7 @@ class BlockHeader{
 //버전계산하는 함수 
 function getVersion(){
 	const package = fs.readFileSync("package.json")
-	console.log(JSON.parse(package).version)
+	// console.log(JSON.parse(package).version)
 	return JSON.parse(package).version
 
 }
@@ -43,9 +43,9 @@ function createGenesisBlock(){
 	const bit = 0
 	const nonce = 0
 
-	console.log("version : %s, timestamp: %d, body : %s",version,timestamp,body)
-	console.log("previousHash : %d", previousHash);
-	console.log("merkleRoot : %d", merkleRoot);
+	// console.log("version : %s, timestamp: %d, body : %s",version,timestamp,body)
+	// console.log("previousHash : %d", previousHash);
+	// console.log("merkleRoot : %d", merkleRoot);
 
 	const header = new BlockHeader(version,index, previousHash, timestamp, merkleRoot, bit,nonce)
 	return new Block(header, body)
@@ -73,14 +73,14 @@ function getLastBlock(){
 
 //data에는 블록이 들어오는거임, 이블록을 가지고 해시값을 만들어내는 것임
 function createHash(data){
-	const {version,index, previousHash, timestamp,merkleRoot,bit,nonce}= data.header
-	const blockString = version + previousHash + timestamp + merkleRoot + bit + nonce
+	const {version, index, previousHash, timestamp,merkleRoot,bit,nonce}= data.header
+	const blockString = version +index + previousHash + timestamp + merkleRoot + bit + nonce
 	const hash = cryptojs.SHA256(blockString).toString()
 	return hash
 }
-const genesisblock =createGenesisBlock()
+const genesisBlock =createGenesisBlock()
 //const testHash = createHash(block)
-console.log(genesisblock)
+console.log(genesisBlock)
 
 
 //다음블록 만들었을 때 기존 블록 정보 가져와
@@ -94,15 +94,13 @@ function nextBlock(bodyData){
 	const merkleRoot = tree.root() || '0'.repeat(64)
 	const bit = 0
 	const nonce = 0
-        const header = new BlockHeader(version, index, previousHash,timestamp,merkleRoot,bit,nonce)
-	
-	console.log(tree)
+    const header = new BlockHeader(version, index, previousHash,timestamp,merkleRoot,bit,nonce)
 	return new Block(header,bodyData)
 
 
 }
-const block1 = nextBlock(["tranjaction1"])
-console.log(block1)
+// const block1 = nextBlock(["tranjaction1"])
+// console.log(block1)
 
 
 function addBlock(bodyData){
@@ -117,6 +115,6 @@ function addBlock(bodyData){
 // console.log(Blocks)
 
 module.exports={
-	Blocks,getLastBlock, createHash, Blocks, nextBlock, addBlock,getVersion,getBlocks
+	Blocks,getLastBlock, createHash, nextBlock, addBlock,getVersion,getBlocks
 }
 
