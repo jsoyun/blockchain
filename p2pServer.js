@@ -1,7 +1,8 @@
 //포트설정
 const p2p_port = process.env.P2P_PORT || 6001
 // const { response } = require("express")
-const WebSocket = require("ws")
+const WebSocket = require("ws");
+const { createHash, addBlock } = require("./chainedBlock");
 // const { getLastBlock } = require("./chainedBlock")
 
 
@@ -22,6 +23,7 @@ let sockets = []
 function initConnection(ws){
 	sockets.push(ws)
 	initMessageHandler(ws)
+	initErrorHandler(ws)
 }
 function getSockets() {
 	return sockets;
@@ -99,7 +101,41 @@ function getSockets() {
 		  "data":JSON.stringify(getBlocks())
 	  })
   }
-  function handleBlockChainResponse() {
+  function handleBlockChainResponse(message) {
+	  const receiveBlocks = JSON.parse(message.data)
+	  //받은것중에 마지막꺼
+	  const latestReceiveBlock = receiveBlocks[receiveBlocks.length-1]
+	  const latesMyBlock = getLastBlock()
+	  //데이터로 받은 블럭 중에 마지막 블럭의 인덱스가
+	  //내가 보유중인 마지막 블럭의 인덱스보다 클때 / 작을 때 (작은건 사실상 필요없지)
+      if (latestReceiveBlock.header.index > latesMyBlock.header.index){
+         //받은 마지막 블록의 이전해시값이 내 마지막 블럭일 때
+		 //이런경우에는 내꺼에다가 마지막 블록을 추가해주면 됨
+		 if (createHash(latesMyBlock)=== latestReceiveBlock.header.previousHash){
+			
+			if (addBlock(latestReceiveBlock)){
+				broadcast(responseLastestMsg())
+			} else {
+				console.log("Invalid Block")
+			}
+			
+		 }
+		 //받은 블럭의 전체 크기가 1일때, 블록 전체 다시 달라고요청
+		 else if (receiveBlocks.length ===1 ){
+			 broadcast(queryAllMsg())
+		 }
+		 //아닐때는 내 전체 블록이 다른블록보다 동기화가 안된 상황
+		 //지금 받은 걸로 통채를 갈아끼워야함.
+		 else {
+			 replaceChain(receiveBlocks)
+
+		 }
+	  }
+	  else {
+		  console.log("Do nothing.")
+	  }
+
+
 	 
   }
 
@@ -120,5 +156,15 @@ function queryLatestMsg(){
 
 //테스트하려면 서버 2개 열어서 요청하고 받은걸 타입들이 오는지 확인..
 
+function initErrorHandler(ws){
+	ws.on("close",()=> {closeConnection(ws);})
+	ws.on("error",()=> {closeConnection(ws);})
+}
+
+function closeConnection(ws){
+	console.log(`Connection close ${ws.url}`)
+	//splice는 소켓을 복사해서 뒤에 넣음 초기화한다고 생각
+	sockets.splice(sockets.indexOf(ws),1)
+}
   
   module.exports = { connectToPeers, getSockets }

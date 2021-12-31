@@ -46,7 +46,7 @@ function addBlock(newBlock){
 
 		Blocks.push(newBlock)
 		return true;
-	}return false;
+	} return false;
 }
 // //블럭만들기 
 // const block = nextBlock(['new Transaction'])

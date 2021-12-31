@@ -16,6 +16,7 @@ class BlockHeader{
 	     this.merkleRoot = merkleRoot
 	     this.bit = bit
 	     this.nonce = nonce
+		
 
 	}
 }
@@ -44,14 +45,16 @@ function createGenesisBlock(){
 	console.log("version : %s, timestamp: %d, body : %s",version,timestamp,body)
 	console.log("previousHash : %d", previousHash);
 	console.log("tree :")
-	console.log(tree)
-	console.log("merkleRoot : %d", merkleRoot.toString('hex'));
-
+	// console.log(tree)
+	console.log("merkleRoot : %s", merkleRoot);
+	console.log("merkleRoot : %s", merkleRoot.toString('hex'));
+     
+	//헤더에 대입
 	const header = new BlockHeader(version, previousHash, timestamp, merkleRoot, bit,nonce)
-	return new Block(header, body)
+    return new Block(header, body)
 
 }
-
+//값넣어서 블록생성
 const block = createGenesisBlock()
 console.log(block)
 
