@@ -16,6 +16,9 @@ return typeof(block.header.version) === 'string'
 
 }
 
+///dfdfdfdfdfdfdfdfddf
+//dfdfdfdfdff
+
 function isValidNewBlock(newBlock,previousBlock){
 	if (isValidBlockStructure(newBlock)===false){
 		console.log('Invalid Block Structure')

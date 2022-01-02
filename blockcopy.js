@@ -1,6 +1,7 @@
+const cryptojs = require('crypto-js')
 const fs = require('fs')
 const merkle = require('merkle')
-const cryptojs = require('crypto-js')
+
 
 class Block{
         constructor(header, body){
@@ -9,25 +10,24 @@ class Block{
 	}
 }
 
-class BlockHeader{
-        constructor(version,index, previousHash, timestamp, merkleRoot, bit, nonce){
-	     this.version = version
-		//index 값 넣기
-     	 this.index = index
-	     this.previousHash = previousHash
-	     this.timetamp = timestamp
-	     this.merkleRoot = merkleRoot
-	     this.bit = bit
-	     this.nonce = nonce
-		
-
+//블록헤더 구조체 선언 : 헤더 구성 요소 나열
+class BlockHeader {
+	constructor(index, version, previousHash, timestamp, merkleRoot, bit, nonce) {
+	  this.index = index
+	  this.version = version
+	  this.previousHash = previousHash
+	  this.timestamp = timestamp
+	  this.merkleRoot = merkleRoot
+	  this.bit = bit
+	  this.nonce = nonce
 	}
-}
+  }
+  
 
 //버전계산하는 함수 
 function getVersion(){
 	const package = fs.readFileSync("package.json")
-	console.log(JSON.parse(package).version)
+	// console.log(JSON.parse(package).version)
 	return JSON.parse(package).version
 
 }
@@ -35,38 +35,37 @@ function getVersion(){
 
 //getVersion()
 
-function createGenesisBlock(){
-	const version = getVersion()
-	//index 값 넣기
-	const index = 0
-	const previousHash = '0'.repeat(64)
-	const timestamp = parseInt(Date.now()/1000)
-	const body = ['hello block']
-	const tree = merkle('sha256').sync(body)
-	const merkleRoot = tree.root() || '0'.repeat(64)
-	const bit = 0
-	const nonce = 0
+function createGenesisBlock() {
+  const index = 0
+  const version = getVersion()
+  const previousHash = '0'.repeat(64) // 0을 64번 반복
+  const timestamp = parseInt(Date.now() / 1000) // 1000 나눈 이유 : 초 단위로 환산하기 위해
+  const body = ['Hello block!']
+  const tree = merkle('sha256').sync(body)
+  const merkleRoot = tree.root() || '0'.repeat(64)
+  const bit = 0
+  const nonce = 0
 
-	// console.log("version : %s, timestamp: %d, body : %s",version,timestamp,body)
-	// console.log("previousHash : %d", previousHash);
-	// console.log("tree :")
-	// // console.log(tree)
-	// console.log("merkleRoot : %s", merkleRoot);
-	// console.log("merkleRoot : %s", merkleRoot.toString('hex'));
-     
-	//헤더에 대입
-	const header = new BlockHeader(version, index, previousHash, timestamp, merkleRoot, bit,nonce)
-    return new Block(header, body)
+  // console.log("version : %s, timestamp : %d, body: %s", version, timestamp, body);
+  // console.log("previousHash : %d", previousHash);
+  // console.log(tree);
+  // console.log("merkleRoot: %s", merkleRoot);
 
+  const header = new BlockHeader(index, version, previousHash, timestamp, merkleRoot, bit, nonce)
+  return new Block(header, body)
 }
+
 //값넣어서 블록생성
+
 let Blocks = [createGenesisBlock()]
-function getBlocks(){
-	return Blocks
+
+function getBlocks() {
+  return Blocks
 }
-function getLastBlock(){
-	return Blocks[Blocks.length -1]
+function getLastBlock() {
+  return Blocks[Blocks.length - 1]
 }
+
 
 
 //블록해시 값 구하기
@@ -77,6 +76,8 @@ function createHash (data){
 	return hash
 }
 
+
+
 // const block = createGenesisBlock()
 // const testHash = createHash(block)
 // console.log(testHash)
@@ -86,10 +87,10 @@ function nextBlock(bodyData) {
 	const prevBlock = getLastBlock()
 	const version = getVersion()
 	//다음순서니까 하나 추가됨
-	const index = prevBlock.header.index +1
+	const index = prevBlock.header.index + 1
 	//createHash함수에 이전블록 정보를 넣어 블록해시값을 구해넣는다.
 	const previousHash = createHash(prevBlock)
-	const timestamp = parseInt(Date.now()/1000)
+	const timestamp = parseInt(Date.now() / 1000)
 	//블록body부분에 저장될 트랜잭션(거래정보)인 bodyData를
 	//merkle몯ㄹ을 사용하여 트랜잭션들의 해시트리를 만들어 tree에 넣어
 	const tree = merkle('sha256').sync(bodyData)
@@ -98,30 +99,41 @@ function nextBlock(bodyData) {
 	const bit = 0
 	const nonce = 0
 
-	const header = new BlockHeader(version,index,previousHash,timestamp, merkleRoot, bit, nonce)
+	const header = new BlockHeader
+	(index,version,previousHash,timestamp, 
+		merkleRoot, bit, nonce)
     return new Block(header,bodyData)
 
 }
 //다음블록생성 출력하기
-const block1 = nextBlock(["tranjaction1"])
+// const block1 = nextBlock(["tranjaction1"])
 // console.log(block1)
 
-//addblock함수를 통해 순차적으로 트랜잭션값전달해 블록생성하고
+//addblock함수를 통해 순차적으로 트랜잭션값 전달해 블록생성하고
 function addBlock(bodyData) {
-	const newBlock = nextBlock(bodyData)
+	const newBlock = nextBlock([bodyData])
 	Blocks.push(newBlock)
-}
+  
+  }
 
-addBlock(['transaction1'])
-addBlock(['transaction2'])
-addBlock(['transaction3'])
-addBlock(['transaction4'])
-addBlock(['transaction5'])
+// addBlock(['transaction1'])
+// addBlock(['transaction2'])
+// addBlock(['transaction3'])
+// addBlock(['transaction4'])
+// addBlock(['transaction5'])
 
-console.log(Blocks);
+// console.log(Blocks);
 
 //이전블록 해시값과 현재 블록해시값의 이전해시가 같은지
 //보려고 내보내줘야함 
-module.exports = { 
-	createHash,
-}
+module.exports = { nextBlock, getLastBlock, createHash, Blocks, getVersion, getBlocks }
+
+
+// function addBlock(newBlock){
+
+// 	if(isValidNewBlock(newBlock,getLastBlock())){
+
+// 		Blocks.push(newBlock)
+// 		return true;
+// 	} return false;
+// }
