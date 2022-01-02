@@ -9,19 +9,19 @@ const {Blocks, createHash, getLastBlock,nextBlock} = require('./blockcopy');
 
 //블록의 각각 타입체크 블록구조 유효한지 체크하는 함수
 function isValidBlockStructure(block) {
-    return typeof(block.header.version) === 'string'
-    && typeof(block.header.index) === 'number'
-    && typeof(block.header.previousHash) === 'string'
-    && typeof(block.header.timestamp) === 'number'
-    && typeof(block.header.merkleRoot) === 'string'
-    && typeof(block.body) === 'object'
+  return typeof (block.header.version) === 'string'
+    && typeof (block.header.index) === 'number'
+    && typeof (block.header.previousHash) === 'string'
+    && typeof (block.header.timestamp) === 'number'
+    && typeof (block.header.merkleRoot) === 'string'
+    && typeof (block.body) === 'object'
 }
 //위 함수를 통해 블록구조의 유효성 검사
 function isValidNewBlock(newBlock, previousBlock) {
-    if (isValidBlockStructure(newBlock) === false) {
-        console.log('Invalid Block Structure')
-        return false;
-    } else if (newBlock.header.index !== previousBlock.header.index +1 ){
+    if (isValidBlockStructure(newBlock)===false){
+		console.log('Invalid Block Structure');
+		return false;
+	} else if (newBlock.header.index !== previousBlock.header.index +1 ){
         console.log('Invalid Index')
         return false;
     } else if (createHash(previousBlock)!==newBlock.header.previousHash) {
