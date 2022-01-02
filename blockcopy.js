@@ -61,6 +61,7 @@ function createGenesisBlock(){
 }
 //값넣어서 블록생성
 let Blocks = [createGenesisBlock()]
+
 function getBlocks(){
 	return Blocks
 }
@@ -106,7 +107,7 @@ function nextBlock(bodyData) {
 const block1 = nextBlock(["tranjaction1"])
 // console.log(block1)
 
-//addblock함수를 통해 순차적으로 트랜잭션값전달해 블록생성하고
+//addblock함수를 통해 순차적으로 트랜잭션값 전달해 블록생성하고
 function addBlock(bodyData) {
 	const newBlock = nextBlock(bodyData)
 	Blocks.push(newBlock)
@@ -122,6 +123,20 @@ console.log(Blocks);
 
 //이전블록 해시값과 현재 블록해시값의 이전해시가 같은지
 //보려고 내보내줘야함 
-module.exports = { 
+module.exports = {
+	Blocks,
+	getLastBlock,
 	createHash,
+	nextBlock,
+	// addBlock
 }
+
+
+// function addBlock(newBlock){
+
+// 	if(isValidNewBlock(newBlock,getLastBlock())){
+
+// 		Blocks.push(newBlock)
+// 		return true;
+// 	} return false;
+// }
