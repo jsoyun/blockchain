@@ -39,6 +39,10 @@ function isValidNewBlock(newBlock, previousBlock) {
     return true;
 }
 
+
+///dfdfdfdfdfdfdfdfddf
+//dfdfdfdfdff
+
 //검증마친 블록들은 chainedBlock.js의 Blocks배열에 추가한다
 function addBlock(newBlock){
     if(isValidNewBlock(newBlock,getLastBlock())){
