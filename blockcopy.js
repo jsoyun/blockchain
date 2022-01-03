@@ -116,6 +116,24 @@ function addBlock(bodyData) {
   
   }
 
+
+
+
+  //0103 me 
+function replaceChain(newBlocks){
+	if (isValidChain(newBlocks)){
+if 	((newBlocks.length> Blocks.length) ||
+(newBlocks.length=== Blocks.length) && random.boolean()){
+	Blocks = newBlocks
+	broadcast(responseLatestMsg())
+	} 
+}
+	else {
+		console.log("받은 원장에 문제가 있음")
+	}
+}
+
+
 // addBlock(['transaction1'])
 // addBlock(['transaction2'])
 // addBlock(['transaction3'])

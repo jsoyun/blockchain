@@ -40,8 +40,28 @@ function isValidNewBlock(newBlock, previousBlock) {
 }
 
 
-///dfdfdfdfdfdfdfdfddf
-//dfdfdfdfdff
+///0103 미
+function isValidChain(newBlocks){
+	//제네시스블록부터 확인,0번이 제네시스블록임
+	if((JSON.stringify(newBlocks[0])) !== JSON.stringify(Blocks[0])){
+		return false;
+	}
+	var tempBlocks = [newBlocks[0]]
+	for(var i = 1; i< newBlocks.length; i++){
+		if (isValidNewBlock(newBlock[i],tempBlocks[i-1]))
+		{
+			tempBlocks.push(newBlocks[i])
+		} 
+		else {
+			return false
+		}
+	}
+	return true
+	
+
+}
+
+
 
 //검증마친 블록들은 chainedBlock.js의 Blocks배열에 추가한다
 function addBlock(newBlock){
@@ -52,7 +72,11 @@ function addBlock(newBlock){
     return false;
 }
 
-const block = nextBlock(['transaction1'])
-addBlock(block)
+// const block = nextBlock(['transaction1'])
+// addBlock(block)
 
-console.log(block)
+// console.log(block)
+
+const block = nextBlock(['transaction1'])
+const chain = isValidChain(block)
+console.log(chain)
