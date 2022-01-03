@@ -43,6 +43,30 @@ function isValidNewBlock(newBlock,previousBlock){
                 return true;
 }
 
+//0103
+function isValidChain(newBlocks){
+	//제네시스블록부터 확인,0번이 제네시스블록임
+	if((JSON.stringify(newBlocks[0])) !== JSON.stringify(Blocks[0])){
+		return false;
+	}
+	var tempBlocks = [newBlocks[0]]
+	for(var i = 1; i< newBlocks.length; i++){
+		if (isValidNewBlock(newBlock[i],tempBlocks[i-1]))
+		{
+			tempBlocks.push(newBlocks[i])
+		} 
+		else {
+			return false
+		}
+	}
+	return true
+	
+
+}
+const block = nextBlock(['new Tr'])
+const chain = isValidChain(block)
+console.log(chain)
+
 function addBlock(newBlock){
 
 	if(isValidNewBlock(newBlock,getLastBlock())){
