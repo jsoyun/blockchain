@@ -1,15 +1,15 @@
 const express = require("express")
 const bodyParser = require("body-parser")
-const {getBlocks, nextBlock,getVersion} = require('./chainedBlock.js')
-const {addBlock}= require('./checkValidBlock')
+const {getBlocks, nextBlock,getVersion} = require('./blockcopy.js')
+const {addBlock}= require('./checkedBlock')
 const { connectToPeers, getSockets } = require("./p2pServer.js")
-const {getPublicKeyFromWallet, initWallet} = require("./encryption")
 
 const http_port = process.env.HTTP_PORT || 3001
 
 function initHttpServer(){
 	const app = express()
 	app.use(bodyParser.json())
+	app.use(express.json)
 	//추가
 	app.post("/addPeers", (req,res)=>{
 		const data = req.body.data || []
@@ -34,33 +34,19 @@ function initHttpServer(){
 		res.send(getBlocks())
 
 	})
-	app.get("/version",(req, res)=>{
-		res.send(getVersion())
-	})
-
 	app.post("/mineBlock",(req,res)=>{
 		const data = req.body.data || []
 		console.log(data)
 		const block = nextBlock(data)
 		addBlock(block)
-		// res.send(block)
-		res.send(getBlocks())
+		res.send(block)
 	})
-
+	app.get("/version",(req, res)=>{
+		res.send(getVersion())
+	})
 	app.post("/stop", (req,res)=>{
 		res.send({"msg":"Stop Server!"})
 		process.exit()
-	})
-	app.get("/address", (req,res)=>{
-		initWallet()
-		const address = getPublicKeyFromWallet().toString();
-		console.log(getPublicKeyFromWallet())
-		if(address != "") {
-			res.send({"address" : address})
-		}
-		else {
-			res.send("empty address!")
-		}
 	})
 	app.listen(http_port,()=>{
 		console.log("Listening Http Port : "+ http_port)

@@ -1,6 +1,6 @@
 
 const merkle = require("merkle")
-const {Blocks, createHash, getLastBlock,nextBlock} = require('./blockcopy');
+const {Blocks, getVersion, createHash, getLastBlock,nextBlock,getBlocks} = require('./blockcopy');
 // const { nextBlock } = require("./chainedBlock");
 
 
@@ -72,11 +72,16 @@ function addBlock(newBlock){
     return false;
 }
 
-// const block = nextBlock(['transaction1'])
-// addBlock(block)
-
-// console.log(block)
-
 const block = nextBlock(['transaction1'])
-const chain = isValidChain(block)
-console.log(chain)
+addBlock(block)
+
+console.log(block)
+
+// const block = nextBlock(['transaction1'])
+// const chain = isValidChain(block)
+// console.log(chain)
+
+module.exports = {
+    Blocks, getVersion, createHash, getLastBlock,nextBlock, addBlock,getBlocks
+
+}
