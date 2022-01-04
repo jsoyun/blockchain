@@ -41,6 +41,7 @@ function createGenesisBlock() {
   const previousHash = '0'.repeat(64) // 0을 64번 반복
   const timestamp = parseInt(Date.now() / 1000) // 1000 나눈 이유 : 초 단위로 환산하기 위해
   const body = ['Hello block!']
+  //암호화해서 머클에 넣어주는 것을 나타냄
   const tree = merkle('sha256').sync(body)
   const merkleRoot = tree.root() || '0'.repeat(64)
   const bit = 0
@@ -120,27 +121,27 @@ function addBlock(bodyData) {
 
 
   //0103 me 
-function replaceChain(newBlocks){
-	if (isValidChain(newBlocks)){
-if 	((newBlocks.length> Blocks.length) ||
-(newBlocks.length=== Blocks.length) && random.boolean()){
-	Blocks = newBlocks
-	broadcast(responseLatestMsg())
-	} 
-}
-	else {
-		console.log("받은 원장에 문제가 있음")
-	}
-}
+// function replaceChain(newBlocks){
+// 	if (isValidChain(newBlocks)){
+// if 	((newBlocks.length> Blocks.length) ||
+// (newBlocks.length=== Blocks.length) && random.boolean()){
+// 	Blocks = newBlocks
+// 	broadcast(responseLatestMsg())
+// 	} 
+// }
+// 	else {
+// 		console.log("받은 원장에 문제가 있음")
+// 	}
+// }
 
 
-// addBlock(['transaction1'])
-// addBlock(['transaction2'])
-// addBlock(['transaction3'])
-// addBlock(['transaction4'])
-// addBlock(['transaction5'])
+addBlock(['transaction1'])
+addBlock(['transaction2'])
+addBlock(['transaction3'])
+addBlock(['transaction4'])
+addBlock(['transaction5'])
 
-// console.log(Blocks);
+console.log(Blocks);
 
 //이전블록 해시값과 현재 블록해시값의 이전해시가 같은지
 //보려고 내보내줘야함 
