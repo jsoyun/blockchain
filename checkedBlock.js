@@ -17,14 +17,14 @@ function isValidBlockStructure(block) {
     && typeof (block.body) === 'object'
 }
 //위 함수를 통해 블록구조의 유효성 검사
-function isValidNewBlock(newBlock, previousBlock) {
+function isValidNewBlock(newBlock, prevBlock) {
     if (isValidBlockStructure(newBlock)===false){
 		console.log('Invalid Block Structure');
 		return false;
-	} else if (newBlock.header.index !== previousBlock.header.index +1 ){
+	} else if (newBlock.header.index !== prevBlock.header.index +1 ){
         console.log('Invalid Index')
         return false;
-    } else if (createHash(previousBlock)!==newBlock.header.previousHash) {
+    } else if (createHash(prevBlock)!==newBlock.header.previousHash) {
         console.log('Invalid previousHash');
         return false;
         //블록길이가 0일경우
