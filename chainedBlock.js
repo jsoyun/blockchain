@@ -21,11 +21,12 @@ class Block{
 }
 
 class BlockHeader{
-        constructor(version,index, previousHash, timestamp, merkleRoot,difficulty, nonce){
+        constructor(version,index, previousHash, 
+			timestamp, merkleRoot,difficulty, nonce){
 	     this.version = version
 	     this.index = index
 	     this.previousHash = previousHash
-	     this.timetamp = timestamp //블럭만들어진 시간
+	     this.timestamp = timestamp //블럭만들어진 시간
 	     this.merkleRoot = merkleRoot
 	    //  this.bit = bit
 		this.difficulty = difficulty //채굴난이도. 아직안씀
@@ -249,14 +250,23 @@ function findBlock(currentVersion, nextIndex, previousHash, nextTimestamp,
 
 	function getCurrentTimestamp(){
 		//Math.round 반올림함수
-		return Math.round(Date().getTime()/ 1000);
+		return Math.round(new Date().getTime()/ 1000);
 	}
 
-	function isValidTimestamp(newBlcok, prevBlock){
-		if (newBlock.header.timestamp - prevBlock.header.timestamp > 60)
+	function isValidTimestamp(newBlock, prevBlock){
+		console.log("뺀거:", newBlock.header.timestamp - prevBlock.header.timestamp)
+		console.log(getCurrentTimestamp())
+		//5이내에 또 만드는 걸 안되게 방지!
+		if (newBlock.header.timestamp - prevBlock.header.timestamp < 5){
 			return false
-		if (getCurrentTimestamp()- newBlock.header.timestamp > 60)
-		    return false
+		}
+		//검증자의 시간과 새로운 블록의 시간과 비교! 검증자가 검증하는데
+		//검증하는 시간이랑 만들어진 블록의 시간이 너무 차이가 나면 버림
+		if (getCurrentTimestamp()- newBlock.header.timestamp > 60 )
+		{
+			return false
+		}
+		 
 		return true
 		
 
